@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlumberCash — AI Revenue System</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF4E00;
+    --orange2: #FF8C00;
+    --dark: #0A0A0A;
+    --dark2: #111111;
+    --dark3: #1A1A1A;
+    --white: #F5F0E8;
+    --gray: #888;
+    --green: #00FF88;
+    --red: #FF2D55;
+    --yellow: #FFD60A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+  .logo span { color: var(--orange); }
+  .nav-cta {
+    background: var(--orange);
+    color: #000;
+    font-weight: 700;
+    padding: 10px 24px;
+    border: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .nav-cta:hover { background: var(--white); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-number {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 500px;
+    color: rgba(255,78,0,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--orange);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    margin-bottom: 30px;
+    width: fit-content;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    margin-bottom: 30px;
+  }
+  .hero h1 .line2 { color: var(--orange); }
+  .hero h1 .line3 { 
+    -webkit-text-stroke: 2px var(--white);
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--gray);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    font-weight: 300;
+  }
+  .hero-sub strong { color: var(--white); font-weight: 700; }
+
+  .hero-stats {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--orange);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .cta-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--orange);
+    color: #000;
+    font-weight: 700;
+    padding: 18px 40px;
+    border: 2px solid var(--orange);
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: transparent; color: var(--orange); }
+  .btn-secondary {
+    border: 2px solid #333;
+    color: var(--white);
+    font-weight: 500;
+    padding: 18px 40px;
+    background: transparent;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--white); }
+
+  /* TICKER */
+  .ticker {
+    background: var(--orange);
+    color: #000;
+    padding: 12px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-track {
+    display: inline-block;
+    animation: ticker 20s linear infinite;
+  }
+  .ticker-item {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 40px;
+  }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* PROBLEM SECTION */
+  section { padding: 100px 40px; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .problem-card {
+    background: var(--dark2);
+    padding: 40px;
+    border-left: 4px solid var(--red);
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-card::after {
+    content: '✗';
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 60px;
+    color: rgba(255,45,85,0.08);
+    font-weight: 900;
+    line-height: 1;
+  }
+  .problem-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .problem-card p { color: var(--gray); font-size: 15px; line-height: 1.6; }
+  .money-lost {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--red);
+    display: block;
+    margin-top: 10px;
+  }
+
+  /* FEATURES */
+  .features-section { background: var(--dark2); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .feature-card {
+    background: var(--dark);
+    padding: 40px;
+    position: relative;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .feature-card:hover { background: var(--dark3); transform: translateY(-4px); }
+  .feature-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(255,78,0,0.12);
+    line-height: 1;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+  }
+  .feature-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .feature-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .feature-card p { color: var(--gray); font-size: 14px; line-height: 1.7; }
+  .feature-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    margin-top: 16px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  .tag-core { background: rgba(255,78,0,0.15); color: var(--orange); }
+  .tag-big { background: rgba(0,255,136,0.1); color: var(--green); }
+  .tag-gold { background: rgba(255,214,10,0.1); color: var(--yellow); }
+
+  /* PRIORITY SYSTEM */
+  .priority-section {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1A0A00 100%);
+  }
+  .priority-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 60px;
+  }
+  .priority-card {
+    padding: 40px 30px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .priority-card.red { border-color: rgba(255,45,85,0.4); background: rgba(255,45,85,0.05); }
+  .priority-card.yellow { border-color: rgba(255,214,10,0.4); background: rgba(255,214,10,0.05); }
+  .priority-card.green { border-color: rgba(0,255,136,0.4); background: rgba(0,255,136,0.05); }
+  .priority-dot {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .red .priority-dot { background: rgba(255,45,85,0.2); animation: pulse-red 2s infinite; }
+  .yellow .priority-dot { background: rgba(255,214,10,0.2); }
+  .green .priority-dot { background: rgba(0,255,136,0.2); }
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,45,85,0.4); }
+    50% { box-shadow: 0 0 0 20px rgba(255,45,85,0); }
+  }
+  .priority-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  .red .priority-label { color: var(--red); }
+  .yellow .priority-label { color: var(--yellow); }
+  .green .priority-label { color: var(--green); }
+  .priority-card p { color: var(--gray); font-size: 14px; line-height: 1.6; }
+  .priority-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 12px;
+  }
+  .red .priority-time { color: var(--red); }
+  .yellow .priority-time { color: var(--yellow); }
+  .green .priority-time { color: var(--green); }
+
+  /* DASHBOARD PREVIEW */
+  .dashboard-section { background: var(--dark3); }
+  .dashboard-preview {
+    background: var(--dark);
+    border: 1px solid #222;
+    border-radius: 4px;
+    margin-top: 50px;
+    overflow: hidden;
+  }
+  .dash-header {
+    background: #111;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #222;
+  }
+  .dash-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dash-dot.r { background: var(--red); }
+  .dash-dot.y { background: var(--yellow); }
+  .dash-dot.g { background: var(--green); }
+  .dash-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gray);
+    margin-left: 10px;
+  }
+  .dash-body { padding: 30px; }
+  .dash-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+  .dash-metric {
+    background: var(--dark2);
+    padding: 20px;
+    border-top: 3px solid;
+  }
+  .dash-metric.m1 { border-color: var(--orange); }
+  .dash-metric.m2 { border-color: var(--green); }
+  .dash-metric.m3 { border-color: var(--yellow); }
+  .dash-metric.m4 { border-color: var(--red); }
+  .dash-metric-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+  }
+  .m1 .dash-metric-val { color: var(--orange); }
+  .m2 .dash-metric-val { color: var(--green); }
+  .m3 .dash-metric-val { color: var(--yellow); }
+  .m4 .dash-metric-val { color: var(--red); }
+  .dash-metric-label { font-size: 11px; color: var(--gray); margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .dash-live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+  .live-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--green); }
+  
+  .recent-calls { }
+  .call-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #1A1A1A;
+    gap: 16px;
+  }
+  .call-row:last-child { border-bottom: none; }
+  .call-priority { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .cp-red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .cp-yellow { background: var(--yellow); }
+  .cp-green { background: var(--green); }
+  .call-info { flex: 1; }
+  .call-name { font-size: 14px; font-weight: 500; }
+  .call-issue { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .call-time { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gray); }
+  .call-status { font-family: 'Space Mono', monospace; font-size: 11px; padding: 4px 10px; }
+  .cs-dispatched { background: rgba(0,255,136,0.1); color: var(--green); }
+  .cs-pending { background: rgba(255,214,10,0.1); color: var(--yellow); }
+  .cs-booked { background: rgba(255,78,0,0.1); color: var(--orange); }
+
+  /* PRICING */
+  .pricing-section { }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .price-card {
+    background: var(--dark2);
+    padding: 50px 40px;
+    position: relative;
+  }
+  .price-card.featured {
+    background: var(--orange);
+    transform: scaleY(1.02);
+  }
+  .price-card.featured * { color: #000 !important; }
+  .price-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: rgba(0,0,0,0.3);
+    display: inline-block;
+    margin-bottom: 30px;
+    color: var(--white);
+  }
+  .featured .price-badge { background: rgba(0,0,0,0.2); }
+  .price-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    line-height: 1;
+    color: var(--white);
+  }
+  .price-num sup { font-size: 30px; }
+  .price-period { font-size: 14px; color: var(--gray); margin-bottom: 30px; }
+  .price-features { list-style: none; margin-bottom: 40px; }
+  .price-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .featured .price-features li { border-bottom-color: rgba(0,0,0,0.15); }
+  .price-features li::before {
+    content: '→';
+    color: var(--orange);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .featured .price-features li::before { color: #000; }
+  .price-btn {
+    width: 100%;
+    padding: 16px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 2px solid var(--white);
+    background: transparent;
+    color: var(--white);
+    transition: all 0.2s;
+  }
+  .featured .price-btn { background: #000; border-color: #000; color: #fff; }
+  .price-btn:hover { background: var(--white); color: #000; }
+
+  /* ROI SECTION */
+  .roi-section {
+    background: var(--orange);
+    color: #000;
+  }
+  .roi-section .section-label { color: rgba(0,0,0,0.5); }
+  .roi-section .section-title { color: #000; }
+  .roi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 60px;
+    align-items: center;
+  }
+  .roi-calc {
+    background: rgba(0,0,0,0.1);
+    padding: 40px;
+  }
+  .roi-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    font-size: 15px;
+  }
+  .roi-row:last-child { border-bottom: none; }
+  .roi-row strong { font-size: 22px; font-family: 'Bebas Neue', sans-serif; }
+  .roi-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.2);
+    margin-top: 16px;
+  }
+  .roi-total-label { font-weight: 700; font-size: 16px; }
+  .roi-total-val { font-family: 'Bebas Neue', sans-serif; font-size: 48px; }
+  .roi-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .roi-text p { font-size: 16px; line-height: 1.7; opacity: 0.8; }
+
+  /* CTA SECTION */
+  .final-cta {
+    text-align: center;
+    padding: 120px 40px;
+    background: radial-gradient(ellipse at center, rgba(255,78,0,0.1) 0%, transparent 70%);
+  }
+  .final-cta .section-title { font-size: clamp(56px, 10vw, 120px); }
+  .final-cta p {
+    color: var(--gray);
+    font-size: 18px;
+    max-width: 500px;
+    margin: 20px auto 50px;
+    font-weight: 300;
+  }
+  .cta-note {
+    margin-top: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+  }
+
+  /* DEMO CALL SECTION */
+  .demo-section {
+    background: var(--dark2);
+    padding: 80px 40px;
+  }
+  .demo-box {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--dark);
+    border: 1px solid #222;
+    padding: 50px;
+    text-align: center;
+  }
+  .phone-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: var(--orange);
+    letter-spacing: 4px;
+    margin: 20px 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+  .phone-display:hover { color: var(--white); }
+  .demo-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #000;
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #1A1A1A;
+    flex-wrap: gap;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+  }
+  .footer-logo span { color: var(--orange); }
+  .footer-copy { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gray); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-size: 13px; color: var(--gray); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+
+  /* ANIMATIONS */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero h1, .hero-sub, .hero-stats, .cta-group {
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  .hero-sub { animation-delay: 0.1s; }
+  .hero-stats { animation-delay: 0.2s; }
+  .cta-group { animation-delay: 0.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    section { padding: 60px 20px; }
+    .hero { padding: 80px 20px 50px; }
+    .hero h1 { font-size: clamp(56px, 15vw, 96px); }
+    .features-grid { grid-template-columns: 1fr; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .priority-grid { grid-template-columns: 1fr; }
+    .roi-grid { grid-template-columns: 1fr; }
+    .dash-metrics { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { gap: 24px; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">PLUMBER<span>CASH</span></div>
+  <a href="#demo" class="nav-cta">Live Demo →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-number">$</div>
+  <div class="hero-tag">🔥 AI Revenue System for Plumbers</div>
+  <h1>
+    STOP<br>
+    <span class="line2">LOSING</span><br>
+    <span class="line3">MONEY</span>
+  </h1>
+  <p class="hero-sub">
+    Every missed call is <strong>$50–$200 walking out your door.</strong> 
+    PlumberCash turns missed calls into booked jobs — automatically, 24/7.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">5sec</span>
+      <span class="stat-label">Auto Response Time</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">$80+</span>
+      <span class="stat-label">Avg Recovery / Day</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">24/7</span>
+      <span class="stat-label">Always Online</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">3x</span>
+      <span class="stat-label">More Jobs Booked</span>
+    </div>
+  </div>
+  <div class="cta-group">
+    <a href="#demo" class="btn-primary">🎙️ Hear Live Demo</a>
+    <a href="#pricing" class="btn-secondary">See Pricing →</a>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">✦ MISSED CALL = MONEY LOST</span>
+    <span class="ticker-item">✦ AI ANSWERS IN 5 SECONDS</span>
+    <span class="ticker-item">✦ AUTO DISPATCH SYSTEM</span>
+    <span class="ticker-item">✦ EMERGENCY PRIORITY</span>
+    <span class="ticker-item">✦ WHATSAPP + SMS + VOICE</span>
+    <span class="ticker-item">✦ DAILY PROFIT REPORT</span>
+    <span class="ticker-item">✦ MISSED CALL = MONEY LOST</span>
+    <span class="ticker-item">✦ AI ANSWERS IN 5 SECONDS</span>
+    <span class="ticker-item">✦ AUTO DISPATCH SYSTEM</span>
+    <span class="ticker-item">✦ EMERGENCY PRIORITY</span>
+    <span class="ticker-item">✦ WHATSAPP + SMS + VOICE</span>
+    <span class="ticker-item">✦ DAILY PROFIT REPORT</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section>
+  <p class="section-label">// The Problem</p>
+  <h2 class="section-title">THE MONEY<br>YOU'RE LOSING</h2>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <h3>📵 Missed Calls</h3>
+      <p>You're on a job, customer calls, goes to voicemail — they call the next plumber.</p>
+      <span class="money-lost">-$150/call</span>
+    </div>
+    <div class="problem-card">
+      <h3>⏰ Slow Response</h3>
+      <p>Customer sends WhatsApp at 11pm. You reply at 9am. They already booked someone else.</p>
+      <span class="money-lost">-$200/night</span>
+    </div>
+    <div class="problem-card">
+      <h3>🚨 Emergency Miss</h3>
+      <p>Burst pipe emergency — customer needs URGENT help. You were unavailable. They paid premium elsewhere.</p>
+      <span class="money-lost">-$500/incident</span>
+    </div>
+    <div class="problem-card">
+      <h3>📅 No Follow-Up</h3>
+      <p>Customer called 2 weeks ago for routine work. Never booked. No one followed up. Revenue gone forever.</p>
+      <span class="money-lost">-$80/lead</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <p class="section-label">// The Solution</p>
+  <h2 class="section-title">9 SYSTEMS<br>WORKING FOR YOU</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-num">01</span>
+      <span class="feature-icon">📈</span>
+      <h3>Missed Call Recovery Engine</h3>
+      <p>Every missed call triggers instant SMS + WhatsApp: "We missed you — reply for fast service." Recover jobs you'd have lost forever.</p>
+      <span class="feature-tag tag-core">CORE WINNER</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">02</span>
+      <span class="feature-icon">⚡</span>
+      <h3>Instant Job Dispatch System</h3>
+      <p>Call comes in → job card auto-created → WhatsApp brief sent → nearest plumber suggested. Zero time wasted.</p>
+      <span class="feature-tag tag-big">BIG DIFFERENCE</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">03</span>
+      <span class="feature-icon">🧠</span>
+      <h3>Smart Problem Classifier</h3>
+      <p>AI understands: leakage, blockage, burst pipe, installation. Auto-tags each job with RED/YELLOW/GREEN priority.</p>
+      <span class="feature-tag tag-core">HIGH VALUE</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">04</span>
+      <span class="feature-icon">📍</span>
+      <h3>Geo-Speed Advantage</h3>
+      <p>Customer location auto-captured. Google Maps link + distance estimate sent to plumber instantly. Saves fuel, saves time.</p>
+      <span class="feature-tag tag-big">TIME SAVER</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">05</span>
+      <span class="feature-icon">💬</span>
+      <h3>Voice + WhatsApp Follow-Up</h3>
+      <p>Customer busy? AI sends voice note + text. Follows up 3 times automatically. Silent sales machine never sleeps.</p>
+      <span class="feature-tag tag-gold">CLOSER FEATURE</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">06</span>
+      <span class="feature-icon">📊</span>
+      <h3>Daily Profit Dashboard</h3>
+      <p>Each morning: calls received, jobs booked, missed calls recovered, estimated revenue saved. Owner sees ROI daily.</p>
+      <span class="feature-tag tag-gold">EGO TRIGGER</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">07</span>
+      <span class="feature-icon">🧾</span>
+      <h3>Auto Quote Estimator</h3>
+      <p>"Based on your issue: estimated $20–$40." Customer knows price upfront, books faster. No price shock surprises.</p>
+      <span class="feature-tag tag-big">PSYCHOLOGY WIN</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">08</span>
+      <span class="feature-icon">🔁</span>
+      <h3>Repeat Customer Engine</h3>
+      <p>7–15 days after job: "Need a plumbing check-up? 10% discount." Recurring revenue from existing customers.</p>
+      <span class="feature-tag tag-gold">LONG TERM GOLD</span>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">09</span>
+      <span class="feature-icon">🚨</span>
+      <h3>Emergency Kill Switch</h3>
+      <p>AI unavailable? Backup SMS routing + alternate number forwarding activates. Zero missed opportunity guarantee.</p>
+      <span class="feature-tag tag-core">PREMIUM FEEL</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRIORITY SYSTEM -->
+<section class="priority-section">
+  <p class="section-label">// Smart Triage</p>
+  <h2 class="section-title">AI KNOWS<br>WHAT'S URGENT</h2>
+  <div class="priority-grid">
+    <div class="priority-card red">
+      <div class="priority-dot">🚨</div>
+      <div class="priority-label">RED ALERT</div>
+      <p>Burst pipe, flooding, gas leak emergency. AI detects distress keywords and fires emergency protocol instantly.</p>
+      <div class="priority-time">DISPATCH IN 30 MINS</div>
+    </div>
+    <div class="priority-card yellow">
+      <div class="priority-dot">⚠️</div>
+      <div class="priority-label">YELLOW</div>
+      <p>Leakage, partial blockage, running toilet. Scheduled same-day priority. Customer gets ETA confirmation.</p>
+      <div class="priority-time">SAME DAY SERVICE</div>
+    </div>
+    <div class="priority-card green">
+      <div class="priority-dot">✅</div>
+      <div class="priority-label">GREEN</div>
+      <p>Installation, maintenance, check-up. Booked at convenience. Auto follow-up if no response within 2 hours.</p>
+      <div class="priority-time">NORMAL BOOKING</div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section class="dashboard-section">
+  <p class="section-label">// Live Dashboard</p>
+  <h2 class="section-title">YOUR COMMAND<br>CENTER</h2>
+  <div class="dashboard-preview">
+    <div class="dash-header">
+      <div class="dash-dot r"></div>
+      <div class="dash-dot y"></div>
+      <div class="dash-dot g"></div>
+      <span class="dash-title">PlumberCash Dashboard — Today's Overview</span>
+    </div>
+    <div class="dash-body">
+      <div class="dash-metrics">
+        <div class="dash-metric m1">
+          <div class="dash-metric-val">24</div>
+          <div class="dash-metric-label">Calls Today</div>
+        </div>
+        <div class="dash-metric m2">
+          <div class="dash-metric-val">19</div>
+          <div class="dash-metric-label">Jobs Booked</div>
+        </div>
+        <div class="dash-metric m3">
+          <div class="dash-metric-val">$385</div>
+          <div class="dash-metric-label">Revenue Recovered</div>
+        </div>
+        <div class="dash-metric m4">
+          <div class="dash-metric-val">3</div>
+          <div class="dash-metric-label">Emergencies Handled</div>
+        </div>
+      </div>
+      <div class="dash-live">
+        <div class="live-dot"></div>
+        <span class="live-text">LIVE — 6 active leads in pipeline</span>
+      </div>
+      <div class="recent-calls">
+        <div class="call-row">
+          <div class="call-priority cp-red"></div>
+          <div class="call-info">
+            <div class="call-name">Ahmed Hassan</div>
+            <div class="call-issue">🚨 Burst pipe — water flooding kitchen</div>
+          </div>
+          <div class="call-time">2 min ago</div>
+          <div class="call-status cs-dispatched">DISPATCHED</div>
+        </div>
+        <div class="call-row">
+          <div class="call-priority cp-yellow"></div>
+          <div class="call-info">
+            <div class="call-name">Sarah Mitchell</div>
+            <div class="call-issue">⚠️ Slow drain — bathroom sink</div>
+          </div>
+          <div class="call-time">18 min ago</div>
+          <div class="call-status cs-booked">BOOKED 3PM</div>
+        </div>
+        <div class="call-row">
+          <div class="call-priority cp-green"></div>
+          <div class="call-info">
+            <div class="call-name">Mike Rodriguez</div>
+            <div class="call-issue">✅ New tap installation — kitchen</div>
+          </div>
+          <div class="call-time">45 min ago</div>
+          <div class="call-status cs-pending">QUOTE SENT</div>
+        </div>
+        <div class="call-row">
+          <div class="call-priority cp-red"></div>
+          <div class="call-info">
+            <div class="call-name">Lisa Chen</div>
+            <div class="call-issue">🚨 No hot water — boiler issue</div>
+          </div>
+          <div class="call-time">1 hr ago</div>
+          <div class="call-status cs-dispatched">DISPATCHED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI -->
+<section class="roi-section">
+  <p class="section-label">// Your Return on Investment</p>
+  <h2 class="section-title">THE MATH<br>IS SIMPLE</h2>
+  <div class="roi-grid">
+    <div class="roi-calc">
+      <div class="roi-row">
+        <span>Avg missed calls per day</span>
+        <strong>5 calls</strong>
+      </div>
+      <div class="roi-row">
+        <span>Avg job value</span>
+        <strong>$80</strong>
+      </div>
+      <div class="roi-row">
+        <span>Recovery rate with AI</span>
+        <strong>60%</strong>
+      </div>
+      <div class="roi-row">
+        <span>Daily recovered revenue</span>
+        <strong>$240</strong>
+      </div>
+      <div class="roi-row">
+        <span>Monthly recovered</span>
+        <strong>$7,200</strong>
+      </div>
+      <div class="roi-total-row">
+        <span class="roi-total-label">PlumberCash Monthly Cost</span>
+        <span class="roi-total-val">$299</span>
+      </div>
+    </div>
+    <div class="roi-text">
+      <h3>YOU MAKE<br>$6,901<br>MORE.</h3>
+      <p>That's every single month. From jobs you were already getting called for — but missing. PlumberCash doesn't find you new customers. It <strong>stops you losing the ones you already have.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO CALL -->
+<section class="demo-section" id="demo">
+  <div class="demo-box">
+    <p class="section-label" style="text-align:center;">// Live Demo</p>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:48px;margin-bottom:16px;">CALL THE AI NOW</h2>
+    <p style="color:var(--gray);font-size:15px;margin-bottom:10px;">Experience what your customers will hear. Real AI. Real responses.</p>
+    <a href="tel:+1234567890" class="phone-display">+1 (234) 567-890</a>
+    <div class="demo-status">
+      <div class="live-dot"></div>
+      AI Receptionist Online — Available 24/7
+    </div>
+    <p style="color:var(--gray);font-size:13px;margin-top:20px;font-family:'Space Mono',monospace;">
+      📝 Replace with your Twilio/VAPI number after deployment
+    </p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <p class="section-label">// Pricing</p>
+  <h2 class="section-title">SIMPLE<br>PRICING</h2>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <span class="price-badge">Starter</span>
+      <div class="price-num"><sup>$</sup>149</div>
+      <div class="price-period">/ month</div>
+      <ul class="price-features">
+        <li>Missed Call SMS Recovery</li>
+        <li>WhatsApp Auto-Response</li>
+        <li>Basic Job Classification</li>
+        <li>Daily Report Email</li>
+        <li>Up to 200 calls/month</li>
+      </ul>
+      <button class="price-btn">Get Started →</button>
+    </div>
+    <div class="price-card featured">
+      <span class="price-badge">⭐ Most Popular</span>
+      <div class="price-num"><sup>$</sup>299</div>
+      <div class="price-period">/ month</div>
+      <ul class="price-features">
+        <li>Everything in Starter</li>
+        <li>AI Priority Classifier</li>
+        <li>Geo-Speed Dispatch</li>
+        <li>Auto Quote Estimator</li>
+        <li>Voice + WhatsApp Follow-up</li>
+        <li>Repeat Customer Engine</li>
+        <li>Unlimited calls</li>
+      </ul>
+      <button class="price-btn">Start Free Trial →</button>
+    </div>
+    <div class="price-card">
+      <span class="price-badge">Enterprise</span>
+      <div class="price-num"><sup>$</sup>499</div>
+      <div class="price-period">/ month</div>
+      <ul class="price-features">
+        <li>Everything in Growth</li>
+        <li>Custom AI Voice Persona</li>
+        <li>Multi-Plumber Team Dispatch</li>
+        <li>Emergency Kill Switch</li>
+        <li>CRM Integration</li>
+        <li>White-label Option</li>
+        <li>Priority Support</li>
+      </ul>
+      <button class="price-btn">Contact Us →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <p class="section-label">// Ready?</p>
+  <h2 class="section-title">START<br><span style="color:var(--orange)">MAKING</span><br>MONEY</h2>
+  <p>Setup takes 24 hours. ROI shows in week 1. Cancel anytime.</p>
+  <div class="cta-group" style="justify-content:center;">
+    <a href="#demo" class="btn-primary">🎙️ Hear Live Demo</a>
+    <a href="mailto:hello@plumbercash.ai" class="btn-secondary">Book Free Setup Call</a>
+  </div>
+  <p class="cta-note">★★★★★ Trusted by 200+ plumbers across Australia & UAE</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PLUMBER<span>CASH</span></div>
+  <div class="footer-copy">© 2026 PlumberCash AI — Built by Karam AI</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:hello@plumbercash.ai">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
